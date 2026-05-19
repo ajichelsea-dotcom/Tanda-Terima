@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanda Terima Resmi - Donasi & Sponsor</title>
+    <style>
+        :root {
+            --primary: #1a4d2e;
+            --primary-light: #eaf2eb;
+            --accent: #b8860b;
+            --danger: #b22222;
+            --bg: #f5f4ef;
+            --card-bg: #ffffff;
+            --text: #2c2c2c;
+            --text-light: #555;
+            --border: #cbb99b;
+            --shadow: 0 2px 12px rgba(0,0,0,0.06);
+            --radius: 12px;
+            --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-serif: 'Georgia', 'Times New Roman', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #123524 0%, #1a4d2e 50%, #143d24 100%);
+            color: #fff;
+            padding: 18px 24px;
+            text-align: center;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.25);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .app-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .app-header .subtitle {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px 26px;
+            border: 1px solid #e3d9c8;
+        }
+        .card h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .form-grid .full-width {
+            grid-column: 1 / -1;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            letter-spacing: 0.2px;
+        }
+        .form-group input {
+            padding: 10px 14px;
+            border: 1.5px solid #ddd2c4;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: #fdfdfb;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26,77,46,0.08);
+        }
+
+        .media-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-top: 12px;
+        }
+        @media (max-width: 650px) {
+            .media-row, .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ttd-container, .camera-container {
+            border: 2px dashed #c5b9a8;
+            border-radius: 10px;
+            padding: 10px;
+            background: #fefefc;
+            text-align: center;
+        }
+        .ttd-label, .cam-label {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        canvas {
+            border: 1px solid #e0d9ce;
+            border-radius: 5px;
+            cursor: crosshair;
+            touch-action: none;
+            background: #fff;
+        }
+        .ttd-actions, .cam-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-xs {
+            padding: 5px 14px;
+            font-size: 0.75rem;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            background: #f9f9f5;
+            font-weight: 500;
+            color: #555;
+        }
+        .btn-xs:hover {
+            background: #eee;
+        }
+        .btn-xs.danger {
+            color: #b22222;
+            border-color: #e8c8c5;
+        }
+
+        .camera-container video,
+        .camera-container .captured-preview {
+            width: 100%;
+            max-height: 180px;
+            border-radius: 6px;
+            background: #000;
+            object-fit: cover;
+            border: 1px solid #e0d9ce;
+        }
+        .camera-container .captured-preview {
+            display: none;
+        }
+
+        .btn-cam {
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-cam.start {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-cam.capture {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-cam.retake {
+            background: #666;
+            color: #fff;
+        }
+
+        .logo-upload-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .logo-preview-sm {
+            width: 60px;
+            height: 60px;
+            border: 2px dashed #c5b9a8;
+            border-radius: 10px;
+            background: #fefefc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #aaa;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .logo-preview-sm img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* ========== PREVIEW RESMI ========== */
+        .receipt-preview {
+            background: #fffef9;
+            border: 2px solid #bfa88c;
+            border-radius: 4px;
+            padding: 28px 30px;
+            position: relative;
+            font-family: var(--font-main);
+            box-shadow: 0 0 20px rgba(0,0,0,0.04);
+            background-image: linear-gradient(to bottom, #fdfaf5 0%, #fffef9 30%);
+        }
+        .receipt-logo-tr {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            max-width: 70px;
+            max-height: 60px;
+            object-fit: contain;
+            opacity: 0.95;
+            z-index: 5;
+        }
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 22px;
+            border-bottom: 2px double #bfa88c;
+            padding-bottom: 12px;
+        }
+        .receipt-title {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #1a3c2a;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .receipt-no-doc {
+            font-size: 0.8rem;
+            color: #4a3f2f;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .receipt-table td {
+            padding: 6px 0;
+            vertical-align: top;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .receipt-table .label-col {
+            width: 160px;
+            font-weight: 600;
+            color: #444;
+            text-align: left;
+            padding-right: 8px;
+            white-space: nowrap;
+        }
+        .receipt-table .value-col {
+            color: #1a3c2a;
+            font-weight: 500;
+            border-bottom: 1px dotted #d9cfbc;
+        }
+
+        .receipt-bottom-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-top: 18px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .receipt-foto-box {
+            flex: 1;
+            min-width: 130px;
+            text-align: center;
+            border: 1px solid #e3d9c8;
+            border-radius: 6px;
+            padding: 8px;
+            background: #fefcf9;
+        }
+        .receipt-foto-box img {
+            max-height: 90px;
+            max-width: 130px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            object-fit: cover;
+            margin-bottom: 4px;
+        }
+        .receipt-foto-caption {
+            font-size: 0.7rem;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .receipt-sign-box {
+            flex: 1.2;
+            min-width: 170px;
+            text-align: right;
+        }
+        .sign-place-date {
+            margin-bottom: 16px;
+            font-weight: 500;
+            color: #1a3c2a;
+            font-size: 0.85rem;
+        }
+        .sign-block {
+            display: inline-block;
+            text-align: center;
+            min-width: 140px;
+        }
+        .sign-block img.sign-image {
+            max-height: 55px;
+            max-width: 160px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 2px;
+        }
+        .sign-line {
+            border-bottom: 1.5px solid #1a3c2a;
+            margin: 6px auto 4px;
+            width: 140px;
+        }
+        .sign-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1a3c2a;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .sign-title {
+            font-size: 0.7rem;
+            color: #6b5e4e;
+            font-style: italic;
+        }
+
+        .receipt-disclaimer {
+            font-size: 0.65rem;
+            color: #888;
+            text-align: center;
+            margin-top: 16px;
+            font-style: italic;
+            border-top: 1px solid #e3d9c8;
+            padding-top: 10px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(26,77,46,0.3);
+        }
+        .btn-primary:hover {
+            background: #123524;
+        }
+        .btn-accent {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-accent:hover {
+            background: #9c6f0a;
+        }
+        .btn-outline {
+            background: #fff;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-outline:hover {
+            background: var(--primary-light);
+        }
+        .btn-danger {
+            background: #fff;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+        .btn-danger:hover {
+            background: #fdecea;
+        }
+        .btn-sm {
+            padding: 6px 16px;
+            font-size: 0.75rem;
+            border-radius: 20px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .history-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .history-item {
+            background: #fefefc;
+            border: 1px solid #e0d9ce;
+            border-radius: 8px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .history-info {
+            flex: 1;
+            font-size: 0.85rem;
+            color: #444;
+        }
+        .history-info strong {
+            color: #1a3c2a;
+        }
+        .history-empty {
+            text-align: center;
+            color: #aaa;
+            padding: 30px;
+            font-style: italic;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a3c2a;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+        .toast.error {
+            background: #b22222;
+        }
+
+        #printArea {
+            display: none;
+        }
+
+        /* ========== PRINT RESMI ========== */
+        @media print {
+            body {
+                background: #fff !important;
+            }
+            .app-header, .main-container, .toast {
+                display: none !important;
+            }
+            #printArea {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: #fff;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 5mm;
+            }
+            .print-sheet {
+                display: flex;
+                flex-direction: column;
+                gap: 3mm;
+            }
+            .print-receipt {
+                border: 1.5px solid #333;
+                border-radius: 2px;
+                padding: 6mm 7mm;
+                background: #fffef9;
+                font-family: 'Segoe UI', 'Georgia', serif;
+                font-size: 8pt;
+                position: relative;
+                page-break-inside: avoid;
+            }
+            .print-receipt .pr-logo {
+                position: absolute;
+                top: 3mm;
+                right: 5mm;
+                max-width: 20mm;
+                max-height: 15mm;
+                object-fit: contain;
+            }
+            .print-receipt .pr-header {
+                text-align: center;
+                border-bottom: 1.5px double #555;
+                padding-bottom: 3mm;
+                margin-bottom: 4mm;
+            }
+            .print-receipt .pr-title {
+                font-family: 'Georgia', serif;
+                font-size: 11pt;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                color: #1a3c2a;
+            }
+            .print-receipt .pr-no-doc {
+                font-size: 7pt;
+                color: #444;
+                margin-top: 1mm;
+                font-weight: 500;
+            }
+            .print-receipt .pr-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 4mm;
+            }
+            .print-receipt .pr-table td {
+                padding: 1.5mm 0;
+                font-size: 8pt;
+            }
+            .print-receipt .pr-table .pr-label {
+                width: 35mm;
+                font-weight: 600;
+                color: #333;
+                text-align: left;
+                padding-right: 2mm;
+            }
+            .print-receipt .pr-table .pr-value {
+                color: #000;
+                font-weight: 500;
+                border-bottom: 0.5px dotted #999;
+            }
+            .print-receipt .pr-bottom {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                margin-top: 5mm;
+                gap: 4mm;
+            }
+            .print-receipt .pr-foto-box {
+                text-align: center;
+                flex: 1;
+                border: 0.5px solid #ccc;
+                padding: 2mm;
+                border-radius: 2px;
+            }
+            .print-receipt .pr-foto-box img {
+                max-height: 18mm;
+                max-width: 28mm;
+                border-radius: 2px;
+                object-fit: cover;
+            }
+            .print-receipt .pr-sign-box {
+                text-align: right;
+                flex: 1.2;
+            }
+            .print-receipt .pr-sign-box .pr-place-date {
+                margin-bottom: 5mm;
+                font-weight: 500;
+                font-size: 8pt;
+                color: #000;
+            }
+            .print-receipt .pr-sign-block {
+                display: inline-block;
+                text-align: center;
+            }
+            .print-receipt .pr-sign-block img {
+                max-height: 14mm;
+                max-width: 40mm;
+                object-fit: contain;
+            }
+            .print-receipt .pr-sign-line {
+                border-top: 1px solid #000;
+                margin: 2mm auto 1mm;
+                width: 35mm;
+            }
+            .print-receipt .pr-sign-name {
+                font-weight: 600;
+                font-size: 7.5pt;
+                text-transform: uppercase;
+            }
+            .print-receipt .pr-sign-title {
+                font-size: 6.5pt;
+                color: #555;
+                font-style: italic;
+            }
+            .print-receipt .pr-disclaimer {
+                font-size: 5.8pt;
+                color: #666;
+                text-align: center;
+                margin-top: 3mm;
+                font-style: italic;
+                border-top: 0.5px dotted #aaa;
+                padding-top: 2mm;
+                line-height: 1.3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <h1>📜 Tanda Terima Resmi</h1>
+        <p class="subtitle">Sponsor & Donasi — Pencatatan Formal</p>
+    </header>
+
+    <div class="main-container">
+        <!-- Form Input -->
+        <div class="card">
+            <h2>✏️ Isi Data Penerimaan</h2>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>📄 No. Dokumen</label>
+                    <input type="text" id="inputNoDokumen" placeholder="Contoh: 001/TT/VI/2025">
+                </div>
+                <div class="form-group full-width">
+                    <label>🏷️ Telah Terima Dari <span style="color:var(--danger);">*</span></label>
+                    <input type="text" id="inputDari" placeholder="Nama pemberi / donatur / sponsor" required>
+                </div>
+                <div class="form-group">
+                    <label>💰 Jumlah / Bentuk <span style="color:var(--danger);">*</span></label>
+                    <input type="text" id="inputJumlah" placeholder="Contoh: Rp 5.000.000 atau 10 Paket Sembako" required>
+                </div>
+                <div class="form-group">
+                    <label>👤 Nama Penerima <span style="color:var(--danger);">*</span></label>
+                    <input type="text" id="inputPenerima" placeholder="Nama lengkap penerima" required>
+                </div>
+                <div class="form-group">
+                    <label>🏛️ Instansi / Organisasi</label>
+                    <input type="text" id="inputInstansi" placeholder="Nama instansi atau organisasi">
+                </div>
+                <div class="form-group">
+                    <label>📍 Tempat / Daerah</label>
+                    <input type="text" id="inputDaerah" placeholder="Contoh: Jakarta Selatan">
+                </div>
+                <div class="form-group">
+                    <label>📅 Tanggal</label>
+                    <input type="date" id="inputTanggal">
+                </div>
+                <div class="form-group full-width">
+                    <label>🖼️ Logo (Opsional, ganti logo default)</label>
+                    <div class="logo-upload-area">
+                        <div class="logo-preview-sm" id="logoPreviewSm"><span>LOGO</span></div>
+                        <input type="file" id="inputLogo" accept="image/*">
+                        <button type="button" class="btn-xs danger" id="btnHapusLogo" style="display:none;">✕ Hapus (kembali ke default)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="media-row">
+                <div class="ttd-container">
+                    <div class="ttd-label">✍️ Tanda Tangan (Gambar di bawah)</div>
+                    <canvas id="canvasTTD" width="300" height="110"></canvas>
+                    <div class="ttd-actions">
+                        <button type="button" class="btn-xs" id="btnClearTTD">🔄 Bersihkan</button>
+                    </div>
+                </div>
+                <div class="camera-container">
+                    <div class="cam-label">📸 Foto Live</div>
+                    <video id="videoLive" autoplay playsinline muted></video>
+                    <img id="capturedPhoto" class="captured-preview" alt="Foto Tersimpan">
+                    <div class="cam-actions">
+                        <button type="button" class="btn-cam start" id="btnStartCam">▶ Mulai Kamera</button>
+                        <button type="button" class="btn-cam capture" id="btnCapture" disabled>📷 Jepret</button>
+                        <button type="button" class="btn-cam retake" id="btnRetake" style="display:none;">🔄 Ulang</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background:#fffbe6;border-left:4px solid var(--accent);padding:10px 14px;border-radius:0 6px 6px 0;font-size:0.8rem;color:#6b5518;margin-top:14px;">
+                ℹ️ <strong>Catatan bawaan:</strong> "<em>Dukungan ini merupakan pemberian sponsor atau donasi berdasarkan permintaan dari institusi atau pihak ketiga. Kami menghimbau penerima untuk melaporkan penerimaan ini sesuai dengan peraturan yang berlaku.</em>"
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="btnSimpan">💾 Simpan Tanda Terima</button>
+                <button class="btn btn-accent" id="btnCetakLangsung">🖨️ Cetak PDF (3 Salinan)</button>
+            </div>
+        </div>
+
+        <!-- Pratinjau Resmi -->
+        <div class="card">
+            <h2>👁️ Pratinjau Tanda Terima Resmi</h2>
+            <div class="receipt-preview" id="receiptPreview">
+                <img class="receipt-logo-tr" id="previewLogo" src="https://upload.wikimedia.org/wikipedia/commons/1/13/DANONE_LOGO_VERTICAL.png" alt="Logo Default Danone">
+                <div class="receipt-header">
+                    <div class="receipt-title">TANDA TERIMA</div>
+                    <div class="receipt-no-doc" id="prevNoDokumen">No. Dokumen: -</div>
+                </div>
+
+                <table class="receipt-table">
+                    <tr>
+                        <td class="label-col">Telah Terima Dari</td>
+                        <td class="value-col" id="prevDari">-</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Jumlah / Bentuk</td>
+                        <td class="value-col" id="prevJumlah">-</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Nama Penerima</td>
+                        <td class="value-col" id="prevPenerima">-</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Instansi / Organisasi</td>
+                        <td class="value-col" id="prevInstansi">-</td>
+                    </tr>
+                </table>
+
+                <div class="receipt-bottom-row">
+                    <div class="receipt-foto-box">
+                        <img id="prevFoto" src="" alt="Foto Live" style="display:none;">
+                        <div class="receipt-foto-caption">Foto Penerima</div>
+                    </div>
+                    <div class="receipt-sign-box">
+                        <div class="sign-place-date" id="prevPlaceDateSign">-</div>
+                        <div class="sign-block">
+                            <img class="sign-image" id="prevTTD" src="" alt="TTD" style="display:none;">
+                            <div class="sign-line"></div>
+                            <div class="sign-name" id="prevPenerimaName">-</div>
+                            <div class="sign-title">Penerima</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="receipt-disclaimer">
+                    Dukungan ini merupakan pemberian sponsor atau donasi berdasarkan permintaan dari institusi atau pihak ketiga. Kami menghimbau penerima untuk melaporkan penerimaan ini sesuai dengan peraturan yang berlaku.
+                </div>
+            </div>
+        </div>
+
+        <!-- Riwayat -->
+        <div class="card">
+            <h2>📋 Riwayat Tersimpan <span style="font-size:0.7rem;color:#999;">(LocalStorage)</span></h2>
+            <ul class="history-list" id="historyList">
+                <li class="history-empty">Belum ada data tersimpan.</li>
+            </ul>
+            <div class="action-buttons" style="margin-top:14px;">
+                <button class="btn btn-danger btn-sm" id="btnHapusSemua">🗑️ Hapus Semua Riwayat</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="printArea"></div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+        (function() {
+            // DOM elements
+            const inputNoDokumen = document.getElementById('inputNoDokumen');
+            const inputDari = document.getElementById('inputDari');
+            const inputJumlah = document.getElementById('inputJumlah');
+            const inputPenerima = document.getElementById('inputPenerima');
+            const inputInstansi = document.getElementById('inputInstansi');
+            const inputDaerah = document.getElementById('inputDaerah');
+            const inputTanggal = document.getElementById('inputTanggal');
+            const inputLogo = document.getElementById('inputLogo');
+            const logoPreviewSm = document.getElementById('logoPreviewSm');
+            const btnHapusLogo = document.getElementById('btnHapusLogo');
+            const canvasTTD = document.getElementById('canvasTTD');
+            const ctxTTD = canvasTTD.getContext('2d');
+            const btnClearTTD = document.getElementById('btnClearTTD');
+            const videoLive = document.getElementById('videoLive');
+            const capturedPhoto = document.getElementById('capturedPhoto');
+            const btnStartCam = document.getElementById('btnStartCam');
+            const btnCapture = document.getElementById('btnCapture');
+            const btnRetake = document.getElementById('btnRetake');
+            const btnSimpan = document.getElementById('btnSimpan');
+            const btnCetakLangsung = document.getElementById('btnCetakLangsung');
+            const btnHapusSemua = document.getElementById('btnHapusSemua');
+            const previewLogo = document.getElementById('previewLogo');
+            const prevNoDokumen = document.getElementById('prevNoDokumen');
+            const prevDari = document.getElementById('prevDari');
+            const prevJumlah = document.getElementById('prevJumlah');
+            const prevPenerima = document.getElementById('prevPenerima');
+            const prevInstansi = document.getElementById('prevInstansi');
+            const prevTTD = document.getElementById('prevTTD');
+            const prevFoto = document.getElementById('prevFoto');
+            const prevPlaceDateSign = document.getElementById('prevPlaceDateSign');
+            const prevPenerimaName = document.getElementById('prevPenerimaName');
+            const historyList = document.getElementById('historyList');
+            const printArea = document.getElementById('printArea');
+            const toast = document.getElementById('toast');
+
+            // Logo default Danone
+            const DEFAULT_LOGO_URL = 'https://upload.wikimedia.org/wikipedia/commons/1/13/DANONE_LOGO_VERTICAL.png';
+            let logoDataURL = '';
+            let ttdDataURL = '';
+            let fotoDataURL = '';
+            let currentStream = null;
+            let riwayatData = [];
+
+            const today = new Date();
+            inputTanggal.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+            function showToast(msg, isError=false) {
+                clearTimeout(window.toastTimer);
+                toast.textContent = msg;
+                toast.className = 'toast ' + (isError ? 'error' : '');
+                void toast.offsetWidth;
+                toast.classList.add('show');
+                window.toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+            }
+
+            function formatDateDisplay(d) {
+                if (!d) return '-';
+                const [y,m,day] = d.split('-');
+                return `${day}-${m}-${y}`;
+            }
+            function getDaerahDate() {
+                const daerah = inputDaerah.value.trim();
+                const tgl = formatDateDisplay(inputTanggal.value);
+                if (daerah && tgl !== '-') return `${daerah}, ${tgl}`;
+                return daerah || tgl;
+            }
+
+            // Logo default Danone
+            function setDefaultLogo() {
+                if (!logoDataURL) {
+                    previewLogo.src = DEFAULT_LOGO_URL;
+                    previewLogo.style.display = 'block';
+                }
+            }
+
+            inputLogo.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file || !file.type.startsWith('image/')) { showToast('File harus gambar!', true); return; }
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    logoDataURL = ev.target.result;
+                    previewLogo.src = logoDataURL;
+                    previewLogo.style.display = 'block';
+                    logoPreviewSm.innerHTML = `<img src="${logoDataURL}" alt="Logo">`;
+                    btnHapusLogo.style.display = 'inline-block';
+                };
+                reader.readAsDataURL(file);
+            });
+            btnHapusLogo.addEventListener('click', () => {
+                logoDataURL = '';
+                inputLogo.value = '';
+                logoPreviewSm.innerHTML = '<span>LOGO</span>';
+                btnHapusLogo.style.display = 'none';
+                setDefaultLogo();
+            });
+
+            // Canvas TTD
+            function initCanvas() {
+                ctxTTD.clearRect(0,0,canvasTTD.width, canvasTTD.height);
+                ctxTTD.strokeStyle = '#1a3c2a';
+                ctxTTD.lineWidth = 2.5;
+                ctxTTD.lineCap = 'round';
+                ctxTTD.lineJoin = 'round';
+                ttdDataURL = '';
+                prevTTD.src = ''; prevTTD.style.display = 'none';
+                updatePreview();
+            }
+            function getCanvasCoords(e) {
+                const rect = canvasTTD.getBoundingClientRect();
+                const sx = canvasTTD.width / rect.width;
+                const sy = canvasTTD.height / rect.height;
+                let cx, cy;
+                if (e.touches && e.touches.length) { cx = e.touches[0].clientX; cy = e.touches[0].clientY; }
+                else if (e.changedTouches && e.changedTouches.length) { cx = e.changedTouches[0].clientX; cy = e.changedTouches[0].clientY; }
+                else { cx = e.clientX; cy = e.clientY; }
+                return { x: (cx - rect.left) * sx, y: (cy - rect.top) * sy };
+            }
+            let isDrawing = false;
+            function startDraw(e) { e.preventDefault(); isDrawing = true; const p = getCanvasCoords(e); ctxTTD.beginPath(); ctxTTD.moveTo(p.x, p.y); }
+            function draw(e) { if (!isDrawing) return; e.preventDefault(); const p = getCanvasCoords(e); ctxTTD.lineTo(p.x, p.y); ctxTTD.stroke(); }
+            function stopDraw() { if (!isDrawing) return; isDrawing = false; ctxTTD.closePath(); ttdDataURL = canvasTTD.toDataURL('image/png'); updatePreview(); }
+            canvasTTD.addEventListener('mousedown', startDraw);
+            canvasTTD.addEventListener('mousemove', draw);
+            canvasTTD.addEventListener('mouseup', stopDraw);
+            canvasTTD.addEventListener('mouseleave', stopDraw);
+            canvasTTD.addEventListener('touchstart', startDraw, {passive: false});
+            canvasTTD.addEventListener('touchmove', draw, {passive: false});
+            canvasTTD.addEventListener('touchend', stopDraw);
+            btnClearTTD.addEventListener('click', initCanvas);
+            initCanvas();
+
+            // Kamera
+            async function startCamera() {
+                try {
+                    if (currentStream) { currentStream.getTracks().forEach(t => t.stop()); }
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: {ideal:640}, height: {ideal:480} } });
+                    currentStream = stream;
+                    videoLive.srcObject = stream;
+                    videoLive.style.display = 'block';
+                    capturedPhoto.style.display = 'none';
+                    btnCapture.disabled = false;
+                    btnRetake.style.display = 'none';
+                    fotoDataURL = '';
+                    prevFoto.src = ''; prevFoto.style.display = 'none';
+                    updatePreview();
+                } catch { showToast('Gagal mengakses kamera.', true); }
+            }
+            btnStartCam.addEventListener('click', startCamera);
+            btnCapture.addEventListener('click', () => {
+                if (!currentStream || !videoLive.videoWidth) return;
+                const c = document.createElement('canvas');
+                c.width = videoLive.videoWidth; c.height = videoLive.videoHeight;
+                c.getContext('2d').drawImage(videoLive, 0, 0);
+                fotoDataURL = c.toDataURL('image/jpeg', 0.85);
+                capturedPhoto.src = fotoDataURL;
+                capturedPhoto.style.display = 'block';
+                videoLive.style.display = 'none';
+                btnCapture.disabled = true;
+                btnRetake.style.display = 'inline-block';
+                if (currentStream) { currentStream.getTracks().forEach(t => t.stop()); currentStream = null; }
+                updatePreview();
+                showToast('Foto berhasil dijepret!');
+            });
+            btnRetake.addEventListener('click', () => {
+                fotoDataURL = ''; capturedPhoto.style.display = 'none'; capturedPhoto.src = '';
+                prevFoto.src = ''; prevFoto.style.display = 'none';
+                btnRetake.style.display = 'none';
+                updatePreview();
+                startCamera();
+            });
+            window.addEventListener('beforeunload', () => { if (currentStream) currentStream.getTracks().forEach(t => t.stop()); });
+
+            function updatePreview() {
+                const noDok = inputNoDokumen.value.trim();
+                prevNoDokumen.textContent = noDok ? `No. Dokumen: ${noDok}` : 'No. Dokumen: -';
+                prevDari.textContent = inputDari.value.trim() || '-';
+                prevJumlah.textContent = inputJumlah.value.trim() || '-';
+                prevPenerima.textContent = inputPenerima.value.trim() || '-';
+                prevInstansi.textContent = inputInstansi.value.trim() || '-';
+                prevPlaceDateSign.textContent = getDaerahDate();
+                prevPenerimaName.textContent = inputPenerima.value.trim() || '-';
+                if (ttdDataURL) { prevTTD.src = ttdDataURL; prevTTD.style.display = 'block'; }
+                else { prevTTD.src = ''; prevTTD.style.display = 'none'; }
+                if (fotoDataURL) { prevFoto.src = fotoDataURL; prevFoto.style.display = 'block'; }
+                else { prevFoto.src = ''; prevFoto.style.display = 'none'; }
+                // Logo
+                if (logoDataURL) {
+                    previewLogo.src = logoDataURL;
+                    previewLogo.style.display = 'block';
+                } else {
+                    setDefaultLogo();
+                }
+            }
+
+            [inputNoDokumen, inputDari, inputJumlah, inputPenerima, inputInstansi, inputDaerah, inputTanggal].forEach(el => {
+                el.addEventListener('input', updatePreview);
+                el.addEventListener('change', updatePreview);
+            });
+            setDefaultLogo();
+            updatePreview();
+
+            // Riwayat
+            function loadRiwayat() {
+                try { riwayatData = JSON.parse(localStorage.getItem('tandaTerimaRiwayat') || '[]'); } catch { riwayatData = []; }
+                renderRiwayat();
+            }
+            function saveRiwayat() { localStorage.setItem('tandaTerimaRiwayat', JSON.stringify(riwayatData)); }
+            function addToRiwayat(data) { riwayatData.unshift(data); if (riwayatData.length > 50) riwayatData = riwayatData.slice(0,50); saveRiwayat(); renderRiwayat(); }
+            function deleteFromRiwayat(id) { riwayatData = riwayatData.filter(i => i.id !== id); saveRiwayat(); renderRiwayat(); }
+            function renderRiwayat() {
+                if (!riwayatData.length) { historyList.innerHTML = '<li class="history-empty">Belum ada data tersimpan.</li>'; return; }
+                historyList.innerHTML = riwayatData.map((item, idx) => `
+                    <li class="history-item">
+                        <div class="history-info">
+                            <strong>#${riwayatData.length - idx}</strong> ${item.noDokumen ? `[${item.noDokumen}] ` : ''}Dari: ${escapeHTML(item.dari)}<br>
+                            <span>Penerima: ${escapeHTML(item.penerima)} | ${item.daerah || '-'}, ${formatDateDisplay(item.tanggal)}</span>
+                        </div>
+                        <div class="history-actions">
+                            <button class="btn btn-sm btn-outline btn-print-one" data-id="${item.id}">🖨️ Cetak</button>
+                            <button class="btn btn-sm btn-danger btn-del-one" data-id="${item.id}">🗑️</button>
+                        </div>
+                    </li>`).join('');
+                document.querySelectorAll('.btn-print-one').forEach(b => b.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const item = riwayatData.find(r => r.id === id);
+                    if (item) printReceipt(item);
+                }));
+                document.querySelectorAll('.btn-del-one').forEach(b => b.addEventListener('click', function() {
+                    if (confirm('Hapus data ini?')) deleteFromRiwayat(parseInt(this.dataset.id));
+                }));
+            }
+            function escapeHTML(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+            btnSimpan.addEventListener('click', () => {
+                if (!inputDari.value.trim() || !inputJumlah.value.trim() || !inputPenerima.value.trim()) {
+                    showToast('Mohon isi minimal: Telah Terima Dari, Jumlah, dan Nama Penerima.', true);
+                    return;
+                }
+                addToRiwayat({
+                    id: Date.now(),
+                    noDokumen: inputNoDokumen.value.trim(),
+                    dari: inputDari.value.trim(),
+                    jumlah: inputJumlah.value.trim(),
+                    penerima: inputPenerima.value.trim(),
+                    instansi: inputInstansi.value.trim(),
+                    daerah: inputDaerah.value.trim(),
+                    tanggal: inputTanggal.value,
+                    logoDataURL: logoDataURL || DEFAULT_LOGO_URL, // Simpan default jika tidak ada
+                    ttdDataURL,
+                    fotoDataURL,
+                    createdAt: new Date().toISOString()
+                });
+                showToast('✅ Tanda terima disimpan!');
+            });
+
+            function printReceipt(data) {
+                const dp = data.daerah ? `${data.daerah}, ${formatDateDisplay(data.tanggal)}` : formatDateDisplay(data.tanggal);
+                const noDok = data.noDokumen || '';
+                const logoSrc = data.logoDataURL || DEFAULT_LOGO_URL;
+                let html = '';
+                for (let i=0; i<3; i++) {
+                    html += `
+                    <div class="print-receipt">
+                        <img class="pr-logo" src="${logoSrc}" alt="Logo">
+                        <div class="pr-header">
+                            <div class="pr-title">TANDA TERIMA</div>
+                            ${noDok ? `<div class="pr-no-doc">No. Dokumen: ${escapeHTML(noDok)}</div>` : ''}
+                        </div>
+                        <table class="pr-table">
+                            <tr><td class="pr-label">Telah Terima Dari</td><td class="pr-value">${escapeHTML(data.dari)}</td></tr>
+                            <tr><td class="pr-label">Jumlah / Bentuk</td><td class="pr-value">${escapeHTML(data.jumlah)}</td></tr>
+                            <tr><td class="pr-label">Nama Penerima</td><td class="pr-value">${escapeHTML(data.penerima)}</td></tr>
+                            <tr><td class="pr-label">Instansi / Organisasi</td><td class="pr-value">${escapeHTML(data.instansi || '-')}</td></tr>
+                        </table>
+                        <div class="pr-bottom">
+                            <div class="pr-foto-box">
+                                ${data.fotoDataURL ? `<img src="${data.fotoDataURL}" alt="Foto">` : ''}
+                                <div style="font-size:6pt;color:#888;">Foto Penerima</div>
+                            </div>
+                            <div class="pr-sign-box">
+                                <div class="pr-place-date">${escapeHTML(dp)}</div>
+                                <div class="pr-sign-block">
+                                    ${data.ttdDataURL ? `<img src="${data.ttdDataURL}" alt="TTD">` : ''}
+                                    <div class="pr-sign-line"></div>
+                                    <div class="pr-sign-name">${escapeHTML(data.penerima)}</div>
+                                    <div class="pr-sign-title">Penerima</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pr-disclaimer">Dukungan ini merupakan pemberian sponsor atau donasi berdasarkan permintaan dari institusi atau pihak ketiga. Kami menghimbau penerima untuk melaporkan penerimaan ini sesuai dengan peraturan yang berlaku.</div>
+                    </div>`;
+                }
+                printArea.innerHTML = `<div class="print-sheet">${html}</div>`;
+                printArea.style.display = 'block';
+                setTimeout(() => { window.print(); setTimeout(() => { printArea.style.display = 'none'; printArea.innerHTML = ''; }, 500); }, 200);
+            }
+
+            btnCetakLangsung.addEventListener('click', () => {
+                if (!inputDari.value.trim() || !inputJumlah.value.trim() || !inputPenerima.value.trim()) {
+                    showToast('Lengkapi data sebelum mencetak.', true); return;
+                }
+                printReceipt({
+                    noDokumen: inputNoDokumen.value.trim(),
+                    dari: inputDari.value.trim(),
+                    jumlah: inputJumlah.value.trim(),
+                    penerima: inputPenerima.value.trim(),
+                    instansi: inputInstansi.value.trim(),
+                    daerah: inputDaerah.value.trim(),
+                    tanggal: inputTanggal.value,
+                    logoDataURL: logoDataURL || DEFAULT_LOGO_URL,
+                    ttdDataURL,
+                    fotoDataURL
+                });
+            });
+
+            btnHapusSemua.addEventListener('click', () => {
+                if (!riwayatData.length) return;
+                if (confirm('Hapus semua riwayat?')) { riwayatData = []; saveRiwayat(); renderRiwayat(); showToast('Riwayat dihapus.'); }
+            });
+
+            loadRiwayat();
+        })();
+    </script>
+</body>
+</html>
